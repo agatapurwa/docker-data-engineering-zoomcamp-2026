@@ -6,8 +6,10 @@ readme = "README.md"
 
 requires-python = ">=3.13"
 dependencies = [
+    "click>=8.5.0",
     "pandas>=3.0.6",
     "psycopg2-binary>=2.9.13",
+    "psycopg[binary]>=3.3.6",
     "pyarrow>=26.0.0",
     "sqlalchemy>=2.1.6",
     "tqdm>=4.70.1",

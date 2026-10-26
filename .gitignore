@@ -220,3 +220,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset CSV terkompresi
+*.csv.gz
+*.csv
