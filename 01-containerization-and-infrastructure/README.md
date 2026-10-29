@@ -68,6 +68,3 @@ uv run python src/ingest_data.py \
 
 > **Note for GitHub Codespaces:** If connecting pgAdmin to PostgreSQL inside Codespaces, use `172.17.0.1` or the Docker bridge gateway IP as the host address to bypass internal DNS resolution constraints.
 
-```
-
-```
