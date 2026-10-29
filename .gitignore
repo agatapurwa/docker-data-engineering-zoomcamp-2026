@@ -224,3 +224,11 @@ __marimo__/
 # Dataset CSV terkompresi
 *.csv.gz
 *.csv
+
+# Terraform local directory & state files
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+override.tf
+override.tf.json
