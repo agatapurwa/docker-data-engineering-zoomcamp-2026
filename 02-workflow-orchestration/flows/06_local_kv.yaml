@@ -1,0 +1,27 @@
+id: 06_local_kv
+namespace: zoomcamp
+
+tasks:
+  - id: storage_endpoint
+    type: io.kestra.plugin.core.kv.Set
+    key: S3_ENDPOINT
+    kvType: STRING
+    value: http://minio:9000
+
+  - id: storage_region
+    type: io.kestra.plugin.core.kv.Set
+    key: S3_REGION
+    kvType: STRING
+    value: us-east-1
+
+  - id: data_lake_bucket
+    type: io.kestra.plugin.core.kv.Set
+    key: LAKE_BUCKET_NAME
+    kvType: STRING
+    value: agata-kestra-zoomcamp
+
+  - id: warehouse_dataset
+    type: io.kestra.plugin.core.kv.Set
+    key: WAREHOUSE_DATASET
+    kvType: STRING
+    value: zoomcamp_dw
