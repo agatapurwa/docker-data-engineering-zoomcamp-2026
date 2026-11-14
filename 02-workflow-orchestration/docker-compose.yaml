@@ -7,6 +7,8 @@ volumes:
     driver: local
   kestra_tmp:
     driver: local
+  minio_data:
+    driver: local
 
 services:
   pgdatabase:
@@ -27,6 +29,22 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - "8085:80"
+
+  minio:
+    image: rustfs/rustfs:latest
+    environment:
+      - RUSTFS_ACCESS_KEY=minioadmin
+      - RUSTFS_SECRET_KEY=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   kestra_postgres:
     image: postgres:16
@@ -54,6 +72,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - kestra_tmp:/tmp/kestra-wd
     environment:
+      SECRET_MINIO_ACCESS_KEY: ${SECRET_MINIO_ACCESS_KEY}
+      SECRET_MINIO_SECRET_KEY: ${SECRET_MINIO_SECRET_KEY}
       KESTRA_CONFIGURATION: |
         datasources:
           postgres:
