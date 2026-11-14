@@ -1,0 +1,27 @@
+id: 07_local_setup
+namespace: zoomcamp
+
+tasks:
+  - id: create_datalake_bucket
+    type: io.kestra.plugin.aws.s3.CreateBucket
+    bucket: "{{ kv('LAKE_BUCKET_NAME') }}"
+
+  - id: create_warehouse_dataset
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    sql: |
+      CREATE SCHEMA IF NOT EXISTS {{ kv('WAREHOUSE_DATASET') }};
+
+pluginDefaults:
+  - type: io.kestra.plugin.aws.s3
+    values:
+      endpoint: "{{ kv('S3_ENDPOINT') }}"
+      region: "{{ kv('S3_REGION') }}"
+      accessKeyId: "{{ secret('MINIO_ACCESS_KEY') }}"
+      secretKeyId: "{{ secret('MINIO_SECRET_KEY') }}"
+      forcePathStyle: true
+
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://pgdatabase:5432/ny_taxi
+      username: root
+      password: root
