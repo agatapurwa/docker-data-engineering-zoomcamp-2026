@@ -1,0 +1,43 @@
+-- ============================================================================
+-- UNIT 3.3.2 REFERENCE ONLY (UNEXECUTED IN BIGQUERY SANDBOX)
+-- ============================================================================
+-- Architectural Note:
+-- Exporting a BigQuery ML model writes TensorFlow SavedModel artifacts
+-- (saved_model.pb, variables/, assets/) to Google Cloud Storage (`gs://`).
+-- Because GCP requires an active billing account to provision GCS buckets—and
+-- this repository runs strictly inside BigQuery Sandbox ($0.00 cost)—these
+-- commands are documented for architectural reference.
+-- ============================================================================
+
+-- 1. Export trained BigQuery ML model to GCS (SQL or bq CLI)
+-- SQL option:
+-- EXPORT MODEL `gen-lang-client-0109324221.nytaxi.tip_model`
+-- OPTIONS (
+--     uri = 'gs://<your-gcs-bucket>/tip_model'
+-- );
+--
+-- CLI option:
+-- bq --project_id gen-lang-client-0109324221 extract -m nytaxi.tip_model gs://<your-gcs-bucket>/tip_model
+
+-- 2. Stage versioned SavedModel directory locally
+-- mkdir -p /tmp/model serving_dir/tip_model/1
+-- gsutil cp -r gs://<your-gcs-bucket>/tip_model /tmp/model
+-- cp -r /tmp/model/tip_model/* serving_dir/tip_model/1
+
+-- 3. Serve model via TensorFlow Serving Docker container (port 8501)
+-- Linux / macOS:
+-- docker pull tensorflow/serving
+-- docker run -p 8501:8501 \
+--   --mount type=bind,source=`pwd`/serving_dir/tip_model,target=/models/tip_model \
+--   -e MODEL_NAME=tip_model -t tensorflow/serving &
+--
+-- Windows PowerShell:
+-- docker run -d -p 8501:8501 `
+--   --mount type=bind,source="${PWD}\serving_dir\tip_model",target=/models/tip_model `
+--   -e MODEL_NAME=tip_model tensorflow/serving
+
+-- 4. Verify model availability & test HTTP REST inference
+-- GET  http://localhost:8501/v1/models/tip_model
+-- POST http://localhost:8501/v1/models/tip_model:predict
+-- curl -d '{"instances": [{"passenger_count":1, "trip_distance":12.2, "PULocationID":"193", "DOLocationID":"264", "payment_type":"1", "fare_amount":20.4, "tolls_amount":0.0}]}' \
+--   -X POST http://localhost:8501/v1/models/tip_model:predict
