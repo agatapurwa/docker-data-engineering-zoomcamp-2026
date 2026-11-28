@@ -221,9 +221,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Dataset CSV terkompresi
+# Compressed CSV dataset
 *.csv.gz
 *.csv
+!04-analytics-engineering/taxi_rides_ny/seeds/*.csv
 
 # Terraform local directory & state files
 **/.terraform/
